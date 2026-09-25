@@ -1,0 +1,4 @@
+{
+  "name": "personal",
+  "install": "bash .cursor/scripts/cloud-agent-install.sh"
+}
