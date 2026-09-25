@@ -3,10 +3,11 @@ import type { PracticeQuestion } from "../types/learning";
 
 export interface PracticeSectionProps {
   questions: PracticeQuestion[];
-  onAnswer: (choiceId: string, correct: boolean) => void;
+  onAnswer: (questionId: string, choiceId: string, correct: boolean) => void;
+  onFlag?: (questionId: string) => void;
 }
 
-export function PracticeSection({ questions, onAnswer }: PracticeSectionProps) {
+export function PracticeSection({ questions, onAnswer, onFlag }: PracticeSectionProps) {
   const [activeId, setActiveId] = useState(questions[0]?.id ?? "");
   const [selected, setSelected] = useState<Record<string, string>>({});
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
@@ -17,7 +18,7 @@ export function PracticeSection({ questions, onAnswer }: PracticeSectionProps) {
     const correct = choiceId === question.correctChoiceId;
     setSelected((s) => ({ ...s, [question.id]: choiceId }));
     setRevealed((r) => ({ ...r, [question.id]: true }));
-    onAnswer(choiceId, correct);
+    onAnswer(question.id, choiceId, correct);
   }
 
   if (!active) {
@@ -70,6 +71,12 @@ export function PracticeSection({ questions, onAnswer }: PracticeSectionProps) {
           );
         })}
       </fieldset>
+
+      {onFlag && (
+        <button type="button" className="btn btn-ghost" onClick={() => onFlag(active.id)}>
+          Flag for review queue
+        </button>
+      )}
 
       {revealed[active.id] && (
         <div role="status" aria-live="polite" className="card" style={{ marginTop: "1rem", background: "var(--color-bg)" }}>
